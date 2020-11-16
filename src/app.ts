@@ -13,6 +13,10 @@ class Game {
   private gameState: string;
   private winner: string;
 
+  // Car that the player uses
+  private CarRedBull:Car;
+  private CarMercedes:Car;
+
   constructor(canvas: HTMLCanvasElement) {
     this.canvas = canvas;
     this.ctx = this.canvas.getContext("2d");
@@ -23,6 +27,9 @@ class Game {
     this.keyboardListener = new KeyboardListener();
 
     this.gameState = "begin";
+    
+    this.CarRedBull = new Car("Max Verstappen", 100, 60, "red");
+    this.CarMercedes = new Car("Louise Hamilton", 100, 260, "zilver");
 
     this.loop();
   }
@@ -40,7 +47,20 @@ class Game {
    * Based on the game state some actions have to be executed
    */
   private loop = () => {
+    if (this.gameState === "begin"){
+    
+    this.writeTextToCanvas("stuk text",50,this.canvas.width/2,60)
     this.draw();
+     if (this.keyboardListener.isKeyDown(82)) {
+      console.log("r is pressed")
+      this.gameState = "dice"
+     }
+    }else if (this.gameState === "dice") {
+      console.log("in dice")
+      this.writeTextToCanvas("stuk text",20,200,50)
+    }else if (this.gameState === "end") {
+      console.log("in the end")
+    }
     requestAnimationFrame(this.loop);
   };
 
@@ -48,8 +68,10 @@ class Game {
    * Function to draw all the cars on the canvas
    */
   private draw() {
+    this.CarRedBull.draw(this.ctx);
+    this.CarMercedes.draw(this.ctx);
   }
-
+  
   /**
    * Writes text to the canvas
    * @param {string} text - Text to write

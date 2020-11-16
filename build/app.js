@@ -1,5 +1,31 @@
 class Car {
-    constructor() {
+    constructor(name, xPosition, yPosition, colour) {
+        this._name = name;
+        this._xPosition = xPosition;
+        this._yPosition = yPosition;
+        this._distance = 0;
+        this.colour = colour;
+        this.image = this.loadNewImage(`./assets/img/${this.colour}-racing-car.png`);
+        console.log(this.image);
+    }
+    set distance(dist) {
+        this._distance = dist;
+    }
+    get distance() {
+        return this._distance;
+    }
+    get xPosition() {
+        return this._xPosition;
+    }
+    get yPosition() {
+        return this._yPosition;
+    }
+    get name() {
+        return this._name;
+    }
+    draw(ctx) {
+        console.log("in car draw");
+        ctx.drawImage(this.image, this._xPosition, this._yPosition);
     }
     loadNewImage(source) {
         const img = new Image();
@@ -32,7 +58,21 @@ KeyboardListener.KEY_R = 82;
 class Game {
     constructor(canvas) {
         this.loop = () => {
-            this.draw();
+            if (this.gameState === "begin") {
+                this.writeTextToCanvas("stuk text", 50, this.canvas.width / 2, 60);
+                this.draw();
+                if (this.keyboardListener.isKeyDown(82)) {
+                    console.log("r is pressed");
+                    this.gameState = "dice";
+                }
+            }
+            else if (this.gameState === "dice") {
+                console.log("in dice");
+                this.writeTextToCanvas("stuk text", 20, 200, 50);
+            }
+            else if (this.gameState === "end") {
+                console.log("in the end");
+            }
             requestAnimationFrame(this.loop);
         };
         this.canvas = canvas;
@@ -41,12 +81,16 @@ class Game {
         this.canvas.height = window.innerHeight;
         this.keyboardListener = new KeyboardListener();
         this.gameState = "begin";
+        this.CarRedBull = new Car("Max Verstappen", 100, 60, "red");
+        this.CarMercedes = new Car("Louise Hamilton", 100, 260, "zilver");
         this.loop();
     }
     rollDice() {
         return this.randomNumber(1, 6);
     }
     draw() {
+        this.CarRedBull.draw(this.ctx);
+        this.CarMercedes.draw(this.ctx);
     }
     writeTextToCanvas(text, fontSize = 20, xCoordinate, yCoordinate, alignment = "center", color = "red") {
         this.ctx.font = `${fontSize}px Minecraft`;
